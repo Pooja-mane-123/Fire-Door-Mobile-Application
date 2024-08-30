@@ -9,6 +9,9 @@ import LinkedDirectorScreen from '@src/screens/LinkedDirectorScreen';
 import DirectorProfileScreen from '@src/screens/DirectorProfileScreen';
 import QRCodeScannerScreen from '@src/screens/QrCodeScannerScreen';
 import QrCodeResultScreen from '@src/screens/QrCodeResultScreen';
+import ContinueInspectionScreen from '@src/screens/ContinueInspectionScreen';
+import InspectionReportScreen from '@src/screens/InspectionReportScreen';
+import ReportScreen from '@src/screens/ReportScreen';
 const Stack = createNativeStackNavigator();
 const Root = () => {
   // ==> Hooks
@@ -48,6 +51,15 @@ const Root = () => {
           />
           <Stack.Screen name="QRCodeScanner" component={QRCodeScannerScreen} />
           <Stack.Screen name="QRScanResult" component={QrCodeResultScreen} />
+          <Stack.Screen
+            name="ContinueInspection"
+            component={ContinueInspectionScreen}
+          />
+          <Stack.Screen
+            name="InspectionReport"
+            component={InspectionReportScreen}
+          />
+          <Stack.Screen name="Report" component={ReportScreen} />
         </>
       ) : (
         <>

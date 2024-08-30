@@ -13,10 +13,10 @@ import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '@src/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import FiredoorLogo from '@src/assets/images/firedoor_logo.png';
 import QRCode from 'react-native-qrcode-svg'; // Import QRCode component
+import dayjs from 'dayjs';
 
 const QrCodeResultScreen = ({navigation, route}) => {
   const {qrScanData} = route.params;
-  console.log('qrScanData', qrScanData);
 
   const renderQRContent = () => {
     let headerStyle = styles.headerText;
@@ -48,6 +48,22 @@ const QrCodeResultScreen = ({navigation, route}) => {
       );
     }
 
+    const installedFormattedDate = dayjs(
+      qrScanData?.door?.createdAt || 'NA',
+    ).format('DD MMM YYYY');
+
+    const inspectionFormattedDate = dayjs(
+      qrScanData?.door?.lastInspectionDate,
+    ).format('DD MMM YYYY');
+
+    const doorInspections = qrScanData?.door?.doorInspections;
+    const passedInspection = doorInspections?.find(
+      inspection =>
+        inspection.doorInspectionStatus.label === 'Passed' ||
+        inspection.doorInspectionStatus.label === 'Failed' ||
+        'NA',
+    );
+
     // QR Code Success Content
     return (
       <View style={styles.contentContainer}>
@@ -56,47 +72,122 @@ const QrCodeResultScreen = ({navigation, route}) => {
             {/* Generate QR Code from a string */}
             <QRCode
               value={!!qrScanData?.code && qrScanData?.code} // Replace with your dynamic string if needed
-              size={230}
+              size={200}
               color={COLORS.primaryDarkGreyHex}
             />
           </View>
           <View style={styles.details}>
-            <Text style={styles.qrCodeText}>
-              QR: {!!qrScanData?.code && qrScanData?.code}
-            </Text>
-            <Text style={styles.label}>DIRECTOR: Edmund Blackadder</Text>
-            <Text style={styles.label}>BUILDING: Blackadder Mansion</Text>
-            <Text style={styles.label}>DOOR: East Wing</Text>
-            <Text style={styles.label}>
-              DESCRIPTION: Opens into the eastern wing, access via Main Hall on
-              the ground floor
-            </Text>
+            <View style={styles.qRDetails}>
+              <Text style={styles.qrCodeText}>QR</Text>
+              <Text>{!!qrScanData?.code && qrScanData?.code}</Text>
+            </View>
+
+            <View style={styles.qRDetails}>
+              <Text style={styles.label}>DIRECTOR</Text>
+              <Text style={styles.label}>
+                {qrScanData?.director?.name || 'NA'}
+              </Text>
+            </View>
+
+            <View style={styles.qRDetails}>
+              <Text style={styles.label}>BUILDING </Text>
+              <Text style={styles.label}>
+                {qrScanData?.door?.building?.name || 'NA'}
+              </Text>
+            </View>
+
+            <View style={styles.qRDetails}>
+              <Text style={styles.label}>DOOR</Text>
+              <Text style={styles.label}>{qrScanData?.door?.name || 'NA'}</Text>
+            </View>
+
+            <View style={styles.qRDetails}>
+              <Text style={styles.label}>DESCRIPTION</Text>
+              <Text style={styles.description}>
+                {qrScanData?.door?.locationDescription || 'NA'}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.infoSection}>
-            <Text style={styles.infoLabel}>MATERIAL:</Text>
-            <Text style={styles.infoText}>Timber</Text>
-            <Text style={styles.infoLabel}>COLOUR:</Text>
-            <Text style={styles.infoText}>Dark Red</Text>
-            <Text style={styles.infoLabel}>GLAZED WIN:</Text>
-            <Text style={styles.infoText}>Yes</Text>
-            <Text style={styles.infoLabel}>CERTIFIER:</Text>
-            <Text style={styles.infoText}>bwf certfire</Text>
-            <Text style={styles.infoLabel}>RATING:</Text>
-            <Text style={styles.infoText}>FD 30</Text>
-            <Text style={styles.infoLabel}>INSTALLED:</Text>
-            <Text style={styles.infoText}>20th Jan 2024</Text>
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>MATERIAL</Text>
+              <Text style={styles.infoText}>
+                {qrScanData?.door?.material?.name || 'NA'}
+              </Text>
+            </View>
+
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>COLOUR</Text>
+              <Text style={styles.infoText}>
+                {qrScanData?.door?.colour?.name || 'NA'}
+              </Text>
+            </View>
+
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>GLAZED WIN</Text>
+              <Text style={styles.infoText}>
+                {qrScanData?.door?.glazedWindow === true ? 'YES' : 'NO'}
+              </Text>
+            </View>
+
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>CERTIFIER</Text>
+              <Text style={styles.infoText}>
+                {qrScanData?.door?.certifier?.name || 'NA'}
+              </Text>
+            </View>
+
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>RATING</Text>
+              <Text style={styles.infoText}>
+                {qrScanData?.door?.rating?.name || 'NA'}
+              </Text>
+            </View>
+
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>INSTALLED</Text>
+              <Text style={styles.infoText}>
+                {installedFormattedDate || 'NA'}
+              </Text>
+            </View>
           </View>
-          <View style={styles.infoSection}>
-            <Text style={styles.infoLabel}>LAST INSPECTION:</Text>
-            <Text style={styles.infoText}>DATE: 22 August 2024</Text>
-            <Text style={styles.infoText}>INSPECTED BY: Jim Morisson</Text>
-            <Text style={styles.infoText}>STATUS: FAILED</Text>
-            <Text style={styles.infoText}>
-              COMMENTS: Signs not fully legible. Need to be re-painted /
-              replaced. And please avoid chaining dogs to the door.
-            </Text>
+          <View style={styles.inspectionInfoSection}>
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>LAST INSPECTION DATE</Text>
+              <Text style={styles.infoText}>
+                {inspectionFormattedDate || 'NA'}
+              </Text>
+            </View>
+
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>INSPECTED BY</Text>
+              <View>
+                {qrScanData?.door?.building?.inspectors?.map(
+                  (inspector, index) => (
+                    <Text key={index} style={styles.infoText}>
+                      {inspector.name}
+                    </Text>
+                  ),
+                )}
+              </View>
+            </View>
+
+            <View style={styles.doorInfo}>
+              <Text style={styles.infoLabel}>STATUS</Text>
+              <Text style={styles.infoText}>
+                {passedInspection?.doorInspectionStatus?.label || 'NA'}
+              </Text>
+            </View>
+
+            <View style={styles.doorInfoComment}>
+              <Text style={styles.infoLabel}>COMMENTS</Text>
+              <Text style={styles.infoText}>
+                Signs not fully legible. Need to be re-painted / replaced. And
+                please avoid chaining dogs to the door.
+              </Text>
+            </View>
           </View>
         </View>
       </View>
@@ -150,7 +241,11 @@ const QrCodeResultScreen = ({navigation, route}) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('ContinueInspectionScreen')}>
+          onPress={() =>
+            navigation.navigate('ContinueInspection', {
+              qrScanData: qrScanData,
+            })
+          }>
           <Text style={styles.buttonText}>CONTINUE INSPECTION</Text>
         </TouchableOpacity>
       </View>
@@ -216,7 +311,8 @@ const styles = StyleSheet.create({
     fontSize: FONTSIZE.size_20,
   },
   contentContainer: {
-    padding: SPACING.space_20,
+    paddingRight: SPACING.space_60,
+    paddingLeft: SPACING.space_60,
   },
   header: {
     flexDirection: 'row',
@@ -244,15 +340,17 @@ const styles = StyleSheet.create({
   },
   qrDetailsContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    gap: SPACING.space_50,
     marginBottom: SPACING.space_20,
+    borderBottomColor: COLORS.primaryDarkGreyHex,
+    borderBottomWidth: 2,
   },
   qrCodeContainer: {
-    flex: 1,
-    alignItems: 'center',
+    // flex: 1,
+    // alignItems: 'center',
+    marginBottom: SPACING.space_20,
     // marginRight: SPACING.space_10,
     // margin: SPACING.space_10
-
   },
   qrCode: {
     width: 100,
@@ -262,7 +360,6 @@ const styles = StyleSheet.create({
   qrCodeText: {
     fontSize: FONTSIZE.size_14,
     color: COLORS.primary,
-
   },
   details: {
     // flex: 1,
@@ -270,7 +367,12 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flex: 1,
     gap: SPACING.space_15,
-    
+  },
+
+  qRDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   label: {
     fontSize: FONTSIZE.size_14,
@@ -278,24 +380,58 @@ const styles = StyleSheet.create({
     color: COLORS.greyDark,
     marginBottom: SPACING.space_8,
   },
+
+  description: {
+    fontSize: FONTSIZE.size_14,
+    fontFamily: FONTFAMILY.poppins_regular,
+    color: COLORS.greyDark,
+    marginBottom: SPACING.space_8,
+    marginLeft: SPACING.space_50,
+    flexShrink: 1,
+  },
   infoContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-evenly',
     marginBottom: SPACING.space_20,
   },
   infoSection: {
     flex: 1,
   },
+
+  inspectionInfoSection: {
+    flex: 1,
+    paddingLeft: SPACING.space_50,
+  },
+
+  doorInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: SPACING.space_10,
+    // marginRight: SPACING.space_36,
+    gap: SPACING.space_30,
+  },
+
+  doorInfoComment: {
+    flexDirection: 'column',
+    marginRight: SPACING.space_36,
+    paddingLeft: SPACING.space_10,
+  },
+
+  infoTextComment: {
+    marginBottom: SPACING.space_16,
+    fontSize: FONTSIZE.size_12,
+  },
+
   infoLabel: {
     fontSize: FONTSIZE.size_12,
-    fontFamily: FONTFAMILY.poppins_bold,
-    color: COLORS.grey,
+    fontFamily: FONTFAMILY.poppins_light,
+    color: COLORS.primaryGreyHex,
   },
   infoText: {
     fontSize: FONTSIZE.size_12,
-    fontFamily: FONTFAMILY.poppins_regular,
-    color: COLORS.greyDark,
-    marginBottom: SPACING.space_5,
+    fontFamily: FONTFAMILY.poppins_bold,
+    color: COLORS.primaryGreyHex,
+    marginBottom: SPACING.space_4,
   },
   buttonContainer: {
     flexDirection: 'row',

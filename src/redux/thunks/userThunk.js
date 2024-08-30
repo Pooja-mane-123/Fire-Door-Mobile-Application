@@ -79,3 +79,18 @@ export const getQrCodeById = createAsyncThunk(
     }
   },
 );
+
+export const createDoorInspectionReport = createAsyncThunk(
+  'user/createDoorInspectionReport',
+  async (model, thunkApi) => {
+    try {
+      const res = await getAxios().post(
+        `door/${model.doorId}/doorInspectionReport`,
+        model,
+      );
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
