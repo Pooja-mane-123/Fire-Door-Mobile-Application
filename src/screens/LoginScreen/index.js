@@ -52,6 +52,7 @@ const LoginScreen = ({navigation}) => {
   const onSubmit = async data => {
     try {
       const loginResponse = await dispatch(loginUserAction({...data})).unwrap();
+
       if (loginResponse) {
         navigation.navigate('app');
       }
