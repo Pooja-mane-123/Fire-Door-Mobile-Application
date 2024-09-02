@@ -12,6 +12,7 @@ import QrCodeResultScreen from '@src/screens/QrCodeResultScreen';
 import ContinueInspectionScreen from '@src/screens/ContinueInspectionScreen';
 import InspectionReportScreen from '@src/screens/InspectionReportScreen';
 import ReportScreen from '@src/screens/ReportScreen';
+import ScheduleInspectionScreen from '@src/screens/ScheduleInspectioScreen';
 const Stack = createNativeStackNavigator();
 const Root = () => {
   // ==> Hooks
@@ -60,6 +61,10 @@ const Root = () => {
             component={InspectionReportScreen}
           />
           <Stack.Screen name="Report" component={ReportScreen} />
+          <Stack.Screen
+            name="ScheduleInspection"
+            component={ScheduleInspectionScreen}
+          />
         </>
       ) : (
         <>

@@ -11,7 +11,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {COLORS, FONTFAMILY, FONTSIZE, SPACING} from '@src/theme';
 import LoadingScreen from '@src/components/loader';
 import BackArrow from '@src/assets/images/BackArrow.png';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {getDirectorById} from '@src/redux/thunks/userThunk';
 import {useDispatch} from 'react-redux';
 
