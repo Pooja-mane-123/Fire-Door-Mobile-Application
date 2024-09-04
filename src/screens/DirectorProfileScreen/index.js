@@ -5,6 +5,7 @@ import {
   Image,
   StatusBar,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -13,6 +14,9 @@ import LoadingScreen from '@src/components/loader';
 import BackArrow from '@src/assets/images/BackArrow.png';
 import {getDirectorById} from '@src/redux/thunks/userThunk';
 import {useDispatch} from 'react-redux';
+import dayjs from 'dayjs';
+import {getLookupAction} from '@src/redux/thunks/lookupThunk';
+import {getLookupByTypeAction} from '@src/redux/thunks/lookupThunk';
 
 const DirectorProfileScreen = ({route, navigation}) => {
   const {directorId} = route.params;
@@ -24,17 +28,27 @@ const DirectorProfileScreen = ({route, navigation}) => {
     ongoingInspectionCount: 0,
   });
 
+  const [lookupData, setLookupData] = useState([]);
+
+  const [selectedBuilding, setSelectedBuilding] = useState(null);
+
   const avatarUri = 'https://example.com/avatar.jpg';
   const dispatch = useDispatch();
 
   useEffect(() => {
     getDirectorData();
+    // getAllLookupData();
+    getLookupByType();
   }, []);
 
   useEffect(() => {
     if (userData && userData.directorBuildings) {
       const directorDetails = processLinkedDirectorData(userData);
       setDirectorData(directorDetails);
+    }
+
+    if (!selectedBuilding && userData?.directorBuildings?.length > 0) {
+      setSelectedBuilding(userData?.directorBuildings[0]);
     }
   }, [userData]);
 
@@ -50,9 +64,37 @@ const DirectorProfileScreen = ({route, navigation}) => {
     }
   };
 
+  const getAllLookupData = async () => {
+    try {
+      setLoading(true);
+      const data = await dispatch(getLookupAction()).unwrap();
+      console.log('Lookup Data', data);
+      setLookupData(data);
+    } catch (error) {
+      console.log('[Director-Profile-Error-Get-Data]', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getLookupByType = async type => {
+    try {
+      setLoading(true);
+      const data = await dispatch(getLookupByTypeAction({type})).unwrap();
+      console.log('Lookup Data', data);
+      setLookupData(data);
+    } catch (error) {
+      console.log('[Director-Profile-Error-Get-Data]', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  console.log(lookupData);
+
   const getDoorCount = () => {
     return userData?.directorBuildings?.reduce(
-      (count, building) => count + building.doors.length,
+      (count, building) => count + building?.doors?.length,
       0,
     );
   };
@@ -60,9 +102,9 @@ const DirectorProfileScreen = ({route, navigation}) => {
   const processLinkedDirectorData = (userData = {}) => {
     const result = userData?.directorBuildings?.reduce(
       (acc, building) => {
-        building.doors.forEach(door => {
-          door.doorInspections.forEach(inspection => {
-            const statusName = inspection.doorInspectionStatus.name;
+        building?.doors?.forEach(door => {
+          door?.doorInspections?.forEach(inspection => {
+            const statusName = inspection?.doorInspectionStatus?.name;
 
             if (statusName === 'inspectionStatusCompleted') {
               acc.completedInspectionCount++;
@@ -87,6 +129,10 @@ const DirectorProfileScreen = ({route, navigation}) => {
   };
 
   const doorCount = getDoorCount();
+
+  const handleBuildingPress = building => {
+    setSelectedBuilding(building);
+  };
 
   return (
     <SafeAreaView style={styles.SafeAreaViewFlex}>
@@ -166,39 +212,182 @@ const DirectorProfileScreen = ({route, navigation}) => {
         </View>
       </View>
 
-      <View style={styles.buildingDoorContainer}>
-        {userData?.directorBuildings?.map((building, index) => {
-          // Calculate the total number of inspections for this building
-          const totalInspections = building.doors?.reduce((count, door) => {
-            return count + (door.doorInspections?.length || 0);
-          }, 0);
-          return (
-            <View key={building.id} style={styles.buildingCard}
-            onPress={() => navigation.navigate('BuildingProfileScreen', {buildingId: building.id})}
-            >
-              <Text style={styles.buildingTitle}>Building {index + 1}</Text>
-              <Text style={styles.buildingName}>{building.name || 'N/A'}</Text>
-              <Text style={styles.addressText}>
-                {building.addressLine1 || 'N/A'},
-              </Text>
-              <Text style={styles.addressText}>
-                {building.addressLine2 || ''},
-              </Text>
-              <Text style={styles.addressText}>
-                {building.addressLine3 || ''},
-              </Text>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.doorCountText}>
-                  Doors {building.doors?.length || 0}
+      <View style={styles.directorBuildingDoorContainer}>
+        <View style={styles.buildingDoorContainer}>
+          {userData?.directorBuildings?.map((building, index) => {
+            // Calculate the total number of inspections for this building
+            const totalInspections = building.doors?.reduce((count, door) => {
+              return count + (door.doorInspections?.length || 0);
+            }, 0);
+            return (
+              <TouchableOpacity
+                key={building.id}
+                style={
+                  selectedBuilding?.id === building.id
+                    ? styles.selectedBuildingCard
+                    : styles.buildingCard
+                }
+                onPress={() => handleBuildingPress(building)}>
+                <Text style={styles.buildingTitle}>Building {index + 1}</Text>
+                <Text style={styles.buildingName}>
+                  {building.name || 'N/A'}
                 </Text>
-                <Text style={styles.inspectionCountText}>
-                  Insp. {totalInspections || 0}
+                <Text style={styles.addressText}>
+                  {building.addressLine1 || 'N/A'},
                 </Text>
-              </View>
-            </View>
-          );
-        })}
+                <Text style={styles.addressText}>
+                  {building.addressLine2 || ''},
+                </Text>
+                <Text style={styles.addressText}>
+                  {building.addressLine3 || ''},
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text style={styles.doorCountText}>
+                    Doors {building.doors?.length || 0}
+                  </Text>
+                  <Text style={styles.inspectionCountText}>
+                    Insp. {totalInspections || 0}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {selectedBuilding && (
+          <View style={styles.directorBuildingDoorContainerHeader}>
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={false}>
+              {selectedBuilding?.doors?.map((door, index) => {
+                console.log('door', door);
+
+                const doorCode = door?.qRCode?.code || 'N/A';
+                const createdAt = door.createdAt
+                  ? dayjs(door.createdAt).format('DD/MMM/YYYY')
+                  : 'N/A';
+
+                return (
+                  <View key={door.id}>
+                    <View style={styles.doorHeader}>
+                      <Text style={styles.doorLabel}>Door {index + 1}</Text>
+                      <Text style={styles.qrCode}>QR:{doorCode}</Text>
+                      <Text style={styles.installedDate}>
+                        INSTALLED:{createdAt}
+                      </Text>
+                    </View>
+                    <Text style={styles.buildingName}>{door?.name}</Text>
+                    <Text style={styles.addressText}>
+                      {door?.locationDescription || 'NA'}
+                    </Text>
+
+                    <View style={styles.doorPropertiesContainer}>
+                      <View style={styles.allDoorProperties}>
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Maker</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.makerId}
+                          </Text>
+                        </View>
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Material</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.materialId}
+                          </Text>
+                        </View>
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Certifier</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.certifierId}
+                          </Text>
+                        </View>
+
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Inspections</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.doorInspections?.length || 0}
+                          </Text>
+                        </View>
+
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Last</Text>
+                          <Text style={styles.properLabel}>
+                            {(door?.lastInspectionDate &&
+                              dayjs?.(door?.lastInspectionDate)?.format(
+                                'DD/MMM/YYYY',
+                              )) ||
+                              'N/A'}
+                          </Text>
+                        </View>
+
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Due Next</Text>
+                          <Text style={styles.properLabel}>
+                            {(door?.nextInspectionDueDate &&
+                              dayjs?.(door?.nextInspectionDueDate)?.format(
+                                'DD/MMM/YYYY',
+                              )) ||
+                              'N/A'}
+                          </Text>
+                        </View>
+                      </View>
+
+                      <View style={styles.allDoorProperties}>
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Maker</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.makerId}
+                          </Text>
+                        </View>
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Material</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.materialId}
+                          </Text>
+                        </View>
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Certifier</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.certifierId}
+                          </Text>
+                        </View>
+
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>Failed</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.doorInspections?.filter(
+                              inspection =>
+                                inspection?.doorInspectionStatus?.name ===
+                                'inspectionStatusFailed',
+                            ).length || 0}
+                          </Text>
+                        </View>
+
+                        <View style={styles.doorProperties}>
+                          <Text style={styles.properLabel}>By</Text>
+                          <Text style={styles.properLabel}>
+                            {door?.doorInspections
+                              ? door.doorInspections
+                                  .map(
+                                    inspection =>
+                                      inspection.scheduledBy || 'N/A',
+                                  )
+                                  .join(', ')
+                              : 'N/A'}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -348,28 +537,15 @@ const styles = StyleSheet.create({
     marginLeft: SPACING.space_10,
   },
 
-  //   buildingDoorContainer: {
-  //     backgroundColor: COLORS.primaryWhiteRgb,
-  //     flexDirection: 'row',
-  //     justifyContent: 'space-between',
-  //     margin: SPACING.space_16,
-  //   },
-
-  //   buildingCardContainer: {
-  //     width: '35%',
-  //     height: 250,
-  //     backgroundColor: COLORS.primaryWhiteRgb,
-  //     padding: SPACING.space_20,
-  //     borderColor: COLORS.primaryLightGreyHex,
-  //     borderWidth: 2,
-  //   },
-
+  directorBuildingDoorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: 240,
+  },
   buildingDoorContainer: {
     width: '40%',
     backgroundColor: COLORS.primaryWhiteRgb,
     padding: SPACING.space_16,
-    // borderColor: COLORS.primaryLightGreyHex,
-    // borderWidth: 2,
   },
   buildingCard: {
     padding: SPACING.space_16,
@@ -377,6 +553,15 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.space_8, // Space between each card
     borderColor: COLORS.secondaryGreyHex,
     borderWidth: 1,
+    elevation: 3, // For shadow effect
+  },
+
+  selectedBuildingCard: {
+    padding: SPACING.space_16,
+    backgroundColor: COLORS.primaryWhiteRgb,
+    marginBottom: SPACING.space_8, // Space between each card
+    borderColor: COLORS.primaryDarkGreyHex,
+    borderWidth: 2,
     elevation: 3, // For shadow effect
   },
   buildingTitle: {
@@ -407,6 +592,52 @@ const styles = StyleSheet.create({
     color: COLORS.primaryDarkGreyHex,
     marginTop: SPACING.space_8,
     textTransform: 'uppercase',
+  },
+
+  directorBuildingDoorContainerHeader: {
+    flexDirection: 'column',
+    backgroundColor: COLORS.primaryWhiteRgb,
+    paddingTop: SPACING.space_32,
+    width: '100%',
+  },
+
+  doorHeader: {
+    flexDirection: 'row',
+    gap: SPACING.space_60,
+    paddingBottom: SPACING.space_16,
+  },
+  doorLabel: {
+    fontSize: FONTSIZE.size_14,
+    textTransform: 'uppercase',
+  },
+  qrCode: {
+    fontSize: FONTSIZE.size_14,
+    textTransform: 'uppercase',
+  },
+  installedDate: {
+    fontSize: FONTSIZE.size_14,
+    textTransform: 'uppercase',
+  },
+
+  doorPropertiesContainer: {
+    flexDirection: 'row',
+    borderBottomColor: COLORS.primaryDarkGreyHex,
+    borderBottomWidth: 1,
+    gap: 20,
+    marginBottom: SPACING.space_16,
+  },
+
+  allDoorProperties: {
+    flexDirection: 'column',
+    gap: SPACING.space_12,
+    paddingBottom: SPACING.space_16,
+    paddingRight: SPACING.space_60,
+  },
+
+  doorProperties: {
+    flexDirection: 'row',
+    gap: 100,
+    justifyContent: 'space-between',
   },
 });
 

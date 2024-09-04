@@ -313,11 +313,7 @@ const DashboardScreen = ({navigation}) => {
           <View style={styles.viewLinkedDirectorContain}>
             <View style={styles.viewLinkedDirectorContainer}>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('LinkedDirector', {
-                    userData: userData,
-                  })
-                }>
+                onPress={() => navigation.navigate('InspectionHistory')}>
                 <Text
                   style={{
                     textTransform: 'uppercase',

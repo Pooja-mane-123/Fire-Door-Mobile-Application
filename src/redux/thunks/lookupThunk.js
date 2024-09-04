@@ -15,3 +15,17 @@ export const getLookupAction = createAsyncThunk(
     }
   },
 );
+
+export const getLookupByTypeAction = createAsyncThunk(
+  'lookup/getLookupByTypeAction',
+  async (model, thunkAPI) => {
+    try {
+      const {type} = model;
+      const res = await getAxios().get(`/lookupType`);
+
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);

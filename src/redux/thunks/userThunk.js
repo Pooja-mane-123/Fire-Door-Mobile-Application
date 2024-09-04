@@ -108,3 +108,15 @@ export const getInspectorScheduledInspection = createAsyncThunk(
     }
   },
 );
+
+export const getInspectorInspectionHistory = createAsyncThunk(
+  'user/getInspectorInspectionHistory',
+  async (model, thunkApi) => {
+    try {
+      const res = await getAxios().get(`inspector/${model}/inspectionHistory`);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

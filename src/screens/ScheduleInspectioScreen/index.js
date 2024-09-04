@@ -50,19 +50,6 @@ export default function ScheduleInspectionScreen({navigation}) {
     setSortOrder(order);
   };
 
-  // const sortedData = scheduledData.sort((a, b) => {
-  //   if (!sortColumn) return 0;
-  //   const aValue =
-  //     sortColumn === 'lastChecked' ? a.door.lastInspectionDate : a[sortColumn];
-  //   const bValue =
-  //     sortColumn === 'lastChecked' ? b.door.lastInspectionDate : b[sortColumn];
-  //   if (sortOrder === 'asc') {
-  //     return aValue > bValue ? 1 : -1;
-  //   } else {
-  //     return aValue < bValue ? 1 : -1;
-  //   }
-  // });
-
   const filteredData = scheduledData
     .filter(item => {
       const doorName = item.door.name?.toLowerCase() || '';

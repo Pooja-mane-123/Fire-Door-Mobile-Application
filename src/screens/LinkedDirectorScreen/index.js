@@ -57,12 +57,12 @@ const LinkedDirectorScreen = ({route, navigation}) => {
   const processLinkedDirectorData = (userData = {}) => {
     const result = userData?.inspectorBuildings?.reduce((acc, building) => {
       console.log('building', building);
-      const directorName = building.director.name;
+      const directorName = building?.director?.name;
 
       if (!acc[directorName]) {
         acc[directorName] = {
-          id: building.director.id,
-          name: building.director.name,
+          id: building?.director?.id,
+          name: building?.director?.name,
           buildingCount: 0,
           doorCount: 0,
           completedInspectionCount: 0,
@@ -72,11 +72,11 @@ const LinkedDirectorScreen = ({route, navigation}) => {
       }
 
       acc[directorName].buildingCount++;
-      acc[directorName].doorCount += building.doors.length;
+      acc[directorName].doorCount += building?.doors?.length;
 
       building.doors.forEach(door => {
         door.doorInspections.forEach(inspection => {
-          const statusName = inspection.doorInspectionStatus.name;
+          const statusName = inspection?.doorInspectionStatus?.name;
 
           if (statusName === 'inspectionStatusCompleted') {
             acc[directorName].completedInspectionCount++;
