@@ -62,109 +62,110 @@ const LoginScreen = ({navigation}) => {
   };
 
   return (
-    <KeyboardAwareScrollView style={styles.ScrollViewFlex}>
-      {/* ==> Loading Screen */}
+    <>
       {authReducer?.loading && <LoadingScreen />}
+      <KeyboardAwareScrollView style={styles.ScrollViewFlex}>
+        {/* ==> Loading Screen */}
 
-      <SafeAreaView style={styles.ParentContainer}>
-        {/* ==> Status Bar */}
-        <StatusBar backgroundColor={COLORS.primaryWhiteRgb} />
+        <SafeAreaView style={styles.ParentContainer}>
+          {/* ==> Status Bar */}
+          <StatusBar backgroundColor={COLORS.primaryWhiteRgb} />
 
-        {/* ==> Login Text  */}
-        <View style={styles.LoginContainer}>
-          <Image
-            style={styles.LoginImageContainer}
-            source={FiredoorLogo}
-            alt="F"
-          />
-          {/* <Text style={styles.LoginText}>Login</Text> */}
-        </View>
+          {/* ==> Login Text  */}
+          <View style={styles.LoginContainer}>
+            <Image
+              style={styles.LoginImageContainer}
+              source={FiredoorLogo}
+              alt="F"
+            />
+          </View>
 
-        {/* ==> UserName */}
-        <View style={styles.UserNameContainer}>
-          <Text style={styles.UsernameText}>User Name</Text>
-          <Controller
-            control={control}
-            name="email"
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={{...styles.EmailInput, borderStyle: 'solid'}}
-                placeholder="Username/Email ID"
-                placeholderTextColor={COLORS.primaryGreyHex}
-                onChangeText={value => onChange(value)}
-                onBlur={onBlur}
-                value={value}
-              />
-            )}
-          />
-          {errors.email && (
-            <Text style={styles.ErrorText}>{errors.email.message}</Text>
-          )}
-        </View>
-
-        {/* ==> Password */}
-        <View style={styles.PasswordContainer}>
-          <Text style={styles.PasswordText}>Password</Text>
-          <View style={styles.PasswordInputContainer}>
+          {/* ==> UserName */}
+          <View style={styles.UserNameContainer}>
+            <Text style={styles.UsernameText}>User Name</Text>
             <Controller
               control={control}
-              name="password"
+              name="email"
               render={({field: {onChange, onBlur, value}}) => (
                 <TextInput
-                  style={styles.PassowrdInput}
-                  placeholder="Password"
+                  style={{...styles.EmailInput, borderStyle: 'solid'}}
+                  placeholder="Username/Email ID"
+                  placeholderTextColor={COLORS.primaryGreyHex}
                   onChangeText={value => onChange(value)}
                   onBlur={onBlur}
                   value={value}
-                  secureTextEntry={!showPassword}
-                  placeholderTextColor={COLORS.primaryGreyHex}
                 />
               )}
             />
-            <TouchableOpacity
-              style={styles.EyeIcon}
-              onPress={() => setShowPassword(!showPassword)}>
-              <FontAwesomeIcon
-                name={showPassword ? 'eye' : 'eye-slash'}
-                size={20}
-                color={COLORS.primaryGreyHex}
+            {errors.email && (
+              <Text style={styles.ErrorText}>{errors.email.message}</Text>
+            )}
+          </View>
+
+          {/* ==> Password */}
+          <View style={styles.PasswordContainer}>
+            <Text style={styles.PasswordText}>Password</Text>
+            <View style={styles.PasswordInputContainer}>
+              <Controller
+                control={control}
+                name="password"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    style={styles.PassowrdInput}
+                    placeholder="Password"
+                    onChangeText={value => onChange(value)}
+                    onBlur={onBlur}
+                    value={value}
+                    secureTextEntry={!showPassword}
+                    placeholderTextColor={COLORS.primaryGreyHex}
+                  />
+                )}
               />
+              <TouchableOpacity
+                style={styles.EyeIcon}
+                onPress={() => setShowPassword(!showPassword)}>
+                <FontAwesomeIcon
+                  name={showPassword ? 'eye' : 'eye-slash'}
+                  size={20}
+                  color={COLORS.primaryGreyHex}
+                />
+              </TouchableOpacity>
+            </View>
+            {errors.password && (
+              <Text style={styles.ErrorText}>{errors.password.message}</Text>
+            )}
+          </View>
+
+          {/* ==> Login Button */}
+          <View style={styles.LoginButtonContainer}>
+            <TouchableOpacity
+              style={styles.LoginButtonTouch}
+              onPress={handleSubmit(onSubmit)}>
+              <Text style={styles.LoginButtonText}>Login</Text>
             </TouchableOpacity>
           </View>
-          {errors.password && (
-            <Text style={styles.ErrorText}>{errors.password.message}</Text>
-          )}
-        </View>
 
-        {/* ==> Login Button */}
-        <View style={styles.LoginButtonContainer}>
-          <TouchableOpacity
-            style={styles.LoginButtonTouch}
-            onPress={handleSubmit(onSubmit)}>
-            <Text style={styles.LoginButtonText}>Login</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* ==> Seperator */}
-        {/* <View style={styles.SeperatorContainer}>
+          {/* ==> Seperator */}
+          {/* <View style={styles.SeperatorContainer}>
           <View style={styles.Sep1} />
           <Text style={styles.SepText}>OR</Text>
           <View style={styles.Sep2} />
         </View> */}
 
-        {/* ==> Login With google */}
-        {/* <View style={styles.GoogleLoginContainer}>
+          {/* ==> Login With google */}
+          {/* <View style={styles.GoogleLoginContainer}>
           <Image source={GoogleImage} alt="G" />
           <Text style={styles.GoogleLoginText}>Login with Google</Text>
         </View> */}
 
-        {/* ==> Login With google */}
-        {/* <View style={styles.GoogleLoginContainer}>
+          {/* ==> Login With google */}
+          {/* <View style={styles.GoogleLoginContainer}>
           <Image source={AppleImage} alt="G" />
           <Text style={styles.GoogleLoginText}>Login with Appe</Text>
         </View> */}
-      </SafeAreaView>
-    </KeyboardAwareScrollView>
+        </SafeAreaView>
+      </KeyboardAwareScrollView>
+    </>
   );
 };
 
@@ -198,9 +199,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.space_24,
   },
 
-  UserNameContainer: {
-    // paddingVertical: SPACING.space_2,
-  },
+  UserNameContainer: {},
 
   UsernameText: {
     color: COLORS.primaryWhiteRgb,
@@ -210,7 +209,6 @@ const styles = StyleSheet.create({
 
   EmailInput: {
     borderWidth: 2,
-    // borderRadius: 5,
     borderColor: COLORS.tertiaryGreyHex,
     marginTop: SPACING.space_8,
     fontFamily: FONTFAMILY.poppins_regular,
@@ -232,8 +230,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.tertiaryGreyHex,
     marginBottom: SPACING.space_2,
-    // borderRadius: 5,
-    // marginTop: SPACING.space_,
   },
 
   PassowrdInput: {
@@ -257,7 +253,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS.forthGreyHex,
     padding: SPACING.space_12,
-    // borderRadius: 10,
   },
 
   LoginButtonText: {

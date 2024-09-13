@@ -38,25 +38,7 @@ export default function InspectionHistoryScreen({navigation}) {
 
   console.log('inspectionHistoryData', inspectionHistoryData);
 
-  const inspections = [
-    {
-      id: '1',
-      date: '15 October 2024',
-      qrCode: 'QR ALPHA387456A',
-      location: 'Blackadder Manor - East Wing',
-      status: '11/11 PASSED',
-      comments: 'Fresh coat of fire-retardant lacquer recommended.',
-      images: 12,
-      reInspection: 'No',
-      inspector: 'EDMUND BLACKADDER',
-    },
-    // Add more inspection data objects as needed
-  ];
-
   const renderInspectionItem = ({item}) => {
-    console.log('item', item);
-
-    // Extracting the first inspection report date if available
     const inspectionDate =
       item?.doorinspectionInspectionReport?.length > 0
         ? dayjs(item.doorinspectionInspectionReport[0]?.createdAt).format(
@@ -64,7 +46,6 @@ export default function InspectionHistoryScreen({navigation}) {
           )
         : 'NA';
 
-    // Extracting the first inspection report comments if available
     const comments =
       item?.doorinspectionInspectionReport?.length > 0
         ? item?.doorinspectionInspectionReport[0]?.remarks?.additionalNotes
@@ -81,17 +62,6 @@ export default function InspectionHistoryScreen({navigation}) {
         : 0;
 
     const reInspection = item?.doorinspectionInspectionReport?.length > 0;
-    item?.doorinspectionInspectionReport?.length > 0 &&
-    item.doorinspectionInspectionReport[0]?.checkpoints
-      ? Array.isArray(item.doorinspectionInspectionReport[0].checkpoints)
-        ? Object.values(
-            item.doorinspectionInspectionReport[0].checkpoints[0],
-          ).includes(false)
-        : Object.values(
-            item.doorinspectionInspectionReport[0].checkpoints,
-          ).includes(false)
-      : 'NA';
-
     const reInspectionStatus = reInspection ? 'Yes' : 'No';
     const status = reInspection ? 'Failed' : 'Passed';
 
@@ -100,57 +70,63 @@ export default function InspectionHistoryScreen({navigation}) {
         ? item.doorinspectionInspectionReport[0]?.doorInspectionPhotos?.length
         : 0;
 
-    // Getting QR Code and Inspector Name
     const qrCode = item?.door?.qRCode?.code || 'NA';
     const directorName = item?.door?.building?.director?.name || 'NA';
-
     const buildingName = item?.door?.building?.name || 'NA';
 
     return (
-      <View style={styles.inspectionItem}>
-        <View style={styles.inspectionHeader}>
-          <Text style={styles.inspectionDate}>{inspectionDate}</Text>
-          <Text style={styles.inspectionQRCode}>{qrCode}</Text>
-          <Text style={styles.inspectorName}>{directorName}</Text>
-        </View>
-
-        <View style={styles.inspectionHistoryContainer}>
-          <View>
-            <Text style={styles.location}>
-              {buildingName || 'NA'} - {item?.door?.name || 'NA'}
-            </Text>
-
-            <View style={styles.comment}>
-              <Text style={styles.detailLabel}>COMMENTS:</Text>
-              <Text style={styles.detailValue}>
-                {comments || 'No Comments'}
-              </Text>
-            </View>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('ShowReportHistory', {
+            id: item.id,
+            inspectionHistoryData: item,
+          })
+        }>
+        <View style={styles.inspectionItem}>
+          <View style={styles.inspectionHeader}>
+            <Text style={styles.inspectionDate}>{inspectionDate}</Text>
+            <Text style={styles.inspectionQRCode}>{qrCode}</Text>
+            <Text style={styles.inspectorName}>{directorName}</Text>
           </View>
 
-          <View style={styles.inspectionDetails}>
-            <View style={styles.detailRowStatus}>
-              <Text style={styles.detailLabel}>STATUS:</Text>
-              <Text style={styles.detailValue}>
-                {checkPointLength || 0}/ 21
+          <View style={styles.inspectionHistoryContainer}>
+            <View>
+              <Text style={styles.location}>
+                {buildingName || 'NA'} - {item?.door?.name || 'NA'}
               </Text>
-              <Text style={styles.detailValue}>{status || 'NA'}</Text>
+
+              <View style={styles.comment}>
+                <Text style={styles.detailLabel}>COMMENTS:</Text>
+                <Text style={styles.detailValue}>
+                  {comments || 'No Comments'}
+                </Text>
+              </View>
             </View>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>IMAGES:</Text>
-              <Text style={styles.detailValue}>{imageLength || 0}</Text>
-            </View>
+            <View style={styles.inspectionDetails}>
+              <View style={styles.detailRowStatus}>
+                <Text style={styles.detailLabel}>STATUS:</Text>
+                <Text style={styles.detailValue}>
+                  {checkPointLength || 0}/ 21
+                </Text>
+                <Text style={styles.detailValue}>{status || 'NA'}</Text>
+              </View>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>RE-INSPECTION:</Text>
-              <Text style={styles.detailValue}>
-                {reInspectionStatus || 'No'}
-              </Text>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>IMAGES:</Text>
+                <Text style={styles.detailValue}>{imageLength || 0}</Text>
+              </View>
+
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>RE-INSPECTION:</Text>
+                <Text style={styles.detailValue}>
+                  {reInspectionStatus || 'No'}
+                </Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 

@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   infoInspectionContainer: {
     flexDirection: 'row',
     padding: SPACING.space_18,
-    gap: SPACING.space_36,
+    gap: SPACING.space_18,
   },
   directorDetailsContainer: {
     gap: SPACING.space_4,
@@ -599,6 +599,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryWhiteRgb,
     paddingTop: SPACING.space_32,
     width: '100%',
+    height: '85%',
   },
 
   doorHeader: {

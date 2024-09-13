@@ -39,7 +39,7 @@ function AuthRoutes() {
               size={30}
             />
           ),
-          /*BOTTOM TEXT STYLING */
+          /*-----BOTTOM TEXT STYLING------ */
           tabBarLabel: ({focused, ke}) => (
             <Text
               style={{

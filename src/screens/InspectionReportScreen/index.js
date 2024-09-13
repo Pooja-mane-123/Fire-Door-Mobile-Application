@@ -234,7 +234,11 @@ const InspectionReportScreen = ({navigation, route}) => {
 
       // Handle success (e.g., show a success message, navigate to another screen)
       console.log('Report created successfully:', createReport);
-      navigation.navigate('Report', {qrScanData,inspectionData});
+      navigation.navigate('Report', {
+        qrScanData,
+        inspectionData,
+        createReport: createReport,
+      });
     } catch (error) {
       // Handle error (e.g., show an error message)
       console.error('Failed to create report:', error);

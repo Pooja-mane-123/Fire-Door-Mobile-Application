@@ -14,6 +14,7 @@ import InspectionReportScreen from '@src/screens/InspectionReportScreen';
 import ReportScreen from '@src/screens/ReportScreen';
 import ScheduleInspectionScreen from '@src/screens/ScheduleInspectioScreen';
 import InspectionHistoryScreen from '@src/screens/InspectionHistoryScreen';
+import ShowInspectionHistoryScreen from '@src/screens/ShowInspectionHistoryScreen';
 const Stack = createNativeStackNavigator();
 const Root = () => {
   // ==> Hooks
@@ -69,6 +70,10 @@ const Root = () => {
           <Stack.Screen
             name="InspectionHistory"
             component={InspectionHistoryScreen}
+          />
+          <Stack.Screen
+            name="ShowReportHistory"
+            component={ShowInspectionHistoryScreen}
           />
         </>
       ) : (

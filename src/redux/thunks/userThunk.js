@@ -120,3 +120,18 @@ export const getInspectorInspectionHistory = createAsyncThunk(
     }
   },
 );
+
+export const getReportById = createAsyncThunk(
+  'user/getReportById',
+  async (model, thunkApi) => {
+    try {
+      const res = await getAxios().get(
+        `door/${model.id}/doorInspectionReport/${model.reportId}`,
+      );
+      console.log('res.data', res.data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
