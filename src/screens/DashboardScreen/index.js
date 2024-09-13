@@ -20,7 +20,6 @@ import {
   getInspectorById,
   getTodaysInspectionByInspectorId,
 } from '@src/redux/thunks/userThunk';
-import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 
 const DashboardScreen = ({navigation}) => {
