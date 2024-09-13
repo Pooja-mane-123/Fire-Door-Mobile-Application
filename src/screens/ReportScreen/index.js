@@ -165,8 +165,6 @@ const ReportScreen = ({navigation, route}) => {
     setModalVisible(true);
   };
 
-  console.log(selectedImage, 'selectedImage');
-
   const handleCloseModal = () => {
     setModalVisible(false);
     setSelectedImage(null);

@@ -36,8 +36,6 @@ export default function InspectionHistoryScreen({navigation}) {
     }
   };
 
-  console.log('inspectionHistoryData', inspectionHistoryData);
-
   const renderInspectionItem = ({item}) => {
     const inspectionDate =
       item?.doorinspectionInspectionReport?.length > 0

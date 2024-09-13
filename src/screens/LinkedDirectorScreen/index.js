@@ -56,7 +56,6 @@ const LinkedDirectorScreen = ({route, navigation}) => {
 
   const processLinkedDirectorData = (userData = {}) => {
     const result = userData?.inspectorBuildings?.reduce((acc, building) => {
-      console.log('building', building);
       const directorName = building?.director?.name;
 
       if (!acc[directorName]) {

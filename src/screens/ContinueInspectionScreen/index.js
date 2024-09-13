@@ -22,7 +22,6 @@ import dayjs from 'dayjs';
 
 const ContinueInspectionScreen = ({navigation, route}) => {
   const {qrScanData} = route.params;
-  console.log('qrScanData', qrScanData);
   const [checked, setChecked] = useState({});
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -49,9 +48,7 @@ const ContinueInspectionScreen = ({navigation, route}) => {
           console.log('ImagePicker Error: ', response.errorMessage);
         } else {
           const source = {uri: response.assets[0].uri};
-          console.log('Image URI: ', source.uri);
           setImages(prevImages => [...prevImages, source.uri]); // Append new image to the list
-          console.log('Image URI: ', source.uri);
         }
       },
     );
@@ -61,8 +58,6 @@ const ContinueInspectionScreen = ({navigation, route}) => {
     setSelectedImage(uri);
     setModalVisible(true);
   };
-
-  console.log(selectedImage, 'selectedImage');
 
   const handleCloseModal = () => {
     setModalVisible(false);
@@ -75,9 +70,6 @@ const ContinueInspectionScreen = ({navigation, route}) => {
       images: images,
       date: new Date().toLocaleDateString(),
     };
-
-    // Save the inspection data (this could be to local storage, a database, etc.)
-    console.log('Inspection Completed:', inspectionData);
 
     // Navigate to the next screen, e.g., InspectionSummaryScreen
     navigation.navigate('InspectionReport', {

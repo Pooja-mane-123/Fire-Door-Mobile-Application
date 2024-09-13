@@ -22,7 +22,6 @@ import CloseIcon from '@src/assets/images/closeImageIcon.png';
 
 export default function ShowInspectionHistoryScreen({navigation, route}) {
   const {id, inspectionHistoryData} = route.params;
-  console.log(inspectionHistoryData);
   const dispatch = useDispatch();
   const [inspectionReportData, setInspectionReportData] = useState({});
   const [images, setImages] = useState(
@@ -48,7 +47,6 @@ export default function ShowInspectionHistoryScreen({navigation, route}) {
       console.log('error', error);
     }
   };
-  console.log('inspectionReportData', inspectionReportData);
 
   const inspectionQuestions = [
     {
@@ -168,7 +166,6 @@ export default function ShowInspectionHistoryScreen({navigation, route}) {
   };
 
   const renderQuestion = ({item, index}) => {
-    console.log('item', item);
     // Get the previous question's section name, or null if this is the first question
     const prevSection =
       index > 0 ? inspectionQuestions[index - 1].section : null;

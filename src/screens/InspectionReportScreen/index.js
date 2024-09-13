@@ -133,7 +133,6 @@ const inspectionQuestions = [
 const InspectionReportScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {qrScanData, inspectionData} = route.params;
-  console.log('qrScanDetails', qrScanData.inspector.id, inspectionData);
   const [checked, setChecked] = useState({});
   const [images, setImages] = useState(inspectionData.images || []);
   const [status, setStatus] = useState(null);
@@ -202,8 +201,6 @@ const InspectionReportScreen = ({navigation, route}) => {
     setModalVisible(true);
   };
 
-  console.log(selectedImage, 'selectedImage');
-
   const handleCloseModal = () => {
     setModalVisible(false);
     setSelectedImage(null);
@@ -233,14 +230,12 @@ const InspectionReportScreen = ({navigation, route}) => {
       ).unwrap();
 
       // Handle success (e.g., show a success message, navigate to another screen)
-      console.log('Report created successfully:', createReport);
       navigation.navigate('Report', {
         qrScanData,
         inspectionData,
         createReport: createReport,
       });
     } catch (error) {
-      // Handle error (e.g., show an error message)
       console.error('Failed to create report:', error);
     } finally {
       setLoading(false); // Always set loading to false

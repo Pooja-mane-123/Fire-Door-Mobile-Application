@@ -70,7 +70,6 @@ const DashboardScreen = ({navigation}) => {
       const inspection = await dispatch(
         getTodaysInspectionByInspectorId(5),
       ).unwrap();
-      console.log('inspection', inspection);
       setTodaysInspection(inspection);
     } catch (error) {}
   };

@@ -68,7 +68,6 @@ const DirectorProfileScreen = ({route, navigation}) => {
     try {
       setLoading(true);
       const data = await dispatch(getLookupAction()).unwrap();
-      console.log('Lookup Data', data);
       setLookupData(data);
     } catch (error) {
       console.log('[Director-Profile-Error-Get-Data]', error);
@@ -81,7 +80,6 @@ const DirectorProfileScreen = ({route, navigation}) => {
     try {
       setLoading(true);
       const data = await dispatch(getLookupByTypeAction({type})).unwrap();
-      console.log('Lookup Data', data);
       setLookupData(data);
     } catch (error) {
       console.log('[Director-Profile-Error-Get-Data]', error);
@@ -89,8 +87,6 @@ const DirectorProfileScreen = ({route, navigation}) => {
       setLoading(false);
     }
   };
-
-  console.log(lookupData);
 
   const getDoorCount = () => {
     return userData?.directorBuildings?.reduce(
@@ -264,8 +260,6 @@ const DirectorProfileScreen = ({route, navigation}) => {
               contentContainerStyle={styles.scrollViewContent}
               showsVerticalScrollIndicator={false}>
               {selectedBuilding?.doors?.map((door, index) => {
-                console.log('door', door);
-
                 const doorCode = door?.qRCode?.code || 'N/A';
                 const createdAt = door.createdAt
                   ? dayjs(door.createdAt).format('DD/MMM/YYYY')

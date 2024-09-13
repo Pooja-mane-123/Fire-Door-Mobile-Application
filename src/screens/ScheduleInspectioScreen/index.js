@@ -83,8 +83,6 @@ export default function ScheduleInspectionScreen({navigation}) {
       }
     });
 
-  console.log('filteredData', filteredData);
-
   const renderItem = ({item}) => (
     <View style={styles.itemContainer}>
       <Text style={styles.text}>

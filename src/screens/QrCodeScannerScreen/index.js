@@ -24,8 +24,6 @@ const QrCodeScannerScreen = ({navigation}) => {
 
   const onSuccess = async e => {
     try {
-      console.log('QR Code Data:', e.data);
-
       // Fetch QR code data based on the scanned code
       const qrData = await dispatch(getQrCodeById(e.data)).unwrap();
       setQrScanData(qrData);
